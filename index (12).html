@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ti"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ንጽሓፍ ትግርኛ</title>
+<style>
+:root{--bg:#fff8ec;--ink:#3b3350;--mut:#8a8199;--ln:#eadfca;--sh:0 4px 14px rgba(90,65,30,.13)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,sans-serif;touch-action:manipulation}
+#app{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(30px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;cursor:pointer;-webkit-user-select:none;user-select:none}
+.g{font-family:"Noto Sans Ethiopic","Abyssinica SIL",Nyala,Kefa,Ebrima,sans-serif}
+.big{border:0;background:#7eb6f0;color:#fff;font-size:20px;font-weight:800;padding:12px 24px;border-radius:99px;box-shadow:var(--sh);margin:5px}.big:disabled{opacity:.35}
+.ic{border:0;background:#fff;box-shadow:var(--sh);border-radius:50%;width:46px;height:46px;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;margin:12px 0}
+.tile{border:0;border-radius:18px;background:#fff;box-shadow:var(--sh);height:76px;font-size:38px;color:var(--k)}.tile.dn{background:color-mix(in srgb,var(--k) 12%,#fff)}.tile.bad{opacity:.3}
+.seven{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.seven .tile{display:block;width:100%;height:auto;aspect-ratio:1;font-size:clamp(20px,7.4vw,38px);border-radius:14px;padding:0}.tile.ph{background:transparent;box-shadow:none;border:2px dashed var(--ln);opacity:.55;pointer-events:none}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.opts .tile{height:auto;aspect-ratio:1.25;font-size:clamp(36px,14vw,64px)}
+.gbtn{border:0;background:#fff;box-shadow:var(--sh);border-radius:34px;padding:10px 34px;font-size:min(40vw,150px);color:var(--k);line-height:1.1}
+.cen{text-align:center}.pan{background:#fff;border-radius:16px;padding:14px;margin:12px 0;box-shadow:var(--sh)}
+.li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--ln)}
+.sm{border:1px solid var(--ln);background:#fff;border-radius:10px;padding:5px 10px;font-size:14px}.sm.on{background:var(--k);color:#fff}
+input[type=text],input[type=password],input[type=tel],select{font:inherit;padding:10px;border:1px solid var(--ln);border-radius:12px;width:100%;background:#fff}select{width:auto}
+#cv{display:block;margin:12px auto;width:min(82vw,330px);background:#fff;border-radius:30px;box-shadow:var(--sh);touch-action:none}
+.pb{height:12px;background:var(--ln);border-radius:9px;overflow:hidden;width:min(82vw,330px);margin:0 auto}.pb i{display:block;height:100%;width:0;background:var(--k)}
+.ov{position:fixed;inset:0;background:rgba(40,30,60,.55);display:flex;align-items:center;justify-content:center;z-index:9;padding:20px}.md{background:#fff;border-radius:22px;padding:22px;width:100%;max-width:320px;text-align:center}
+.fb{text-align:center;font-size:22px;font-weight:800;min-height:34px}.ok{color:#4fae5c}.no{color:#e5645b}.sub{color:var(--mut);font-size:14px}
+.bl{font-size:min(40vw,150px);line-height:1.1}
+.tabs{display:flex;gap:6px;margin:10px 0}.tabs button{flex:1;border:1px solid var(--ln);background:#fff;border-radius:12px;padding:9px}.tabs .on{background:var(--ink);color:#fff}
+.slots span{display:inline-flex;width:56px;height:62px;border:3px dashed var(--ln);border-radius:14px;align-items:center;justify-content:center;font-size:34px;margin:4px}
+.wc img{width:min(60vw,220px);height:min(60vw,220px);object-fit:cover;border-radius:20px}
+.th{width:50px;height:50px;object-fit:cover;border-radius:10px}.rw{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+</style></head>
+<body><div id="app"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+var FB={apiKey:"AIzaSyCcHCvLkUHb6f43e2J8SpwBIAgQspgB-Cc",authDomain:"hxanat-fidelat.firebaseapp.com",projectId:"hxanat-fidelat",storageBucket:"hxanat-fidelat.firebasestorage.app",messagingSenderId:"1076543453785",appId:"1:1076543453785:web:a2da0c9edb6a879bab4f48"};
+var PAL=['#e5645b','#ee8a3a','#e0b020','#4fae5c','#2fb3a3','#4a8fe0','#8a6fd0','#e0679f'],PIN='kidusmikael12',FNT="'Noto Sans Ethiopic','Abyssinica SIL',Nyala,Kefa,Ebrima,sans-serif";
+var RW=('ሀሁሂሃሄህሆ ለሉሊላሌልሎ ሐሑሒሓሔሕሖ መሙሚማሜምሞ ረሩሪራሬርሮ በቡቢባቤብቦ ቨቩቪቫቬቭቮ ሰሱሲሳሴስሶ ሸሹሺሻሼሽሾ ቀቁቂቃቄቅቆ ቐቑቒቓቔቕቖ ተቱቲታቴትቶ ቸቹቺቻቼችቾ ነኑኒናኔንኖ ኘኙኚኛኜኝኞ አኡኢኣኤእኦ ከኩኪካኬክኮ ኸኹኺኻኼኽኾ ወዉዊዋዌውዎ ዐዑዒዓዔዕዖ ዘዙዚዛዜዝዞ ዠዡዢዣዤዥዦ የዩዪያዬይዮ ደዱዲዳዴድዶ ጀጁጂጃጄጅጆ ገጉጊጋጌግጎ ጠጡጢጣጤጥጦ ጨጩጪጫጬጭጮ ጸጹጺጻጼጽጾ ጰጱጲጳጴጵጶ ፈፉፊፋፌፍፎ ፐፑፒፓፔፕፖ').split(' ').map(function(r){return Array.from(r)});
+var C=null,P={done:{},prov:{}},V='home',Q=null,CUR='',ST=1,AT='c',ED={t:'',img:'',aud:''},EXQ={id:'',nm:'',qs:[]},DB=null,SYNCED=false,FD=[],MR=null,MK='';
+try{P=JSON.parse(localStorage.getItem('ge_p'))||P}catch(e){}P.done=P.done||{};P.prov=P.prov||{};
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function rowOf(c){for(var i=0;i<RW.length;i++)if(RW[i].indexOf(c)>-1)return i;return-1}
+function col(c){var r=rowOf(c);return PAL[C.rc&&C.rc[r]!=null?C.rc[r]:(r<0?5:r%8)]}
+function gc(t){return Array.from(t||'').filter(function(x){return/[\u1200-\u137F]/.test(x)})}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+var AU={};function play(u){if(!u)return;try{var a=AU[u]||(AU[u]=new Audio(u));a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+function sp(){try{localStorage.setItem('ge_p',JSON.stringify(P))}catch(e){}upush()}
+function idb(m,v){return new Promise(function(r,j){var o=indexedDB.open('ge',1);o.onupgradeneeded=function(){o.result.createObjectStore('s')};o.onsuccess=function(){var s=o.result.transaction('s',m==='get'?'readonly':'readwrite').objectStore('s'),x=m==='get'?s.get('c'):s.put(v,'c');x.onsuccess=function(){r(x.result)};x.onerror=j};o.onerror=j})}
+function sv(){C.v=Date.now();idb('set',C).catch(function(){});schedPush()}
+function isOpen(){return C.open!==false}
+function pl(){return isOpen()?C.sel.slice():Object.keys(P.done).filter(function(c){return C.sel.indexOf(c)>-1})}
+
+/* ---- Firebase (samma dokument som förut: gc/main, gca, gu) ---- */
+var FBERR='',RAX={},PT=0,PUSHING=false,AGAIN=false,PID=0;
+function fh(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)+'-'+s.length.toString(36)}
+function assets(){var A={};Object.keys(C.aud||{}).forEach(function(c){if(C.aud[c])A['c'+c.codePointAt(0).toString(16)]=C.aud[c]});C.words.forEach(function(w){if(w.img)A['i'+w.id]=w.img;if(w.aud)A['a'+w.id]=w.aud});return A}
+function schedPush(){if(!DB||!SYNCED)return;clearTimeout(PT);PT=setTimeout(push,700)}
+function push(){
+  if(PUSHING){AGAIN=true;return Promise.resolve(false)}PUSHING=true;
+  var A=assets(),ax={},ops=[],k;
+  for(k in A){if(A[k].length>950000)continue;var h=fh(A[k]);ax[k]=h;if(RAX[k]!==h)ops.push(DB.collection('gca').doc(k).set({d:A[k]}))}
+  var main={v:C.v,sel:C.sel,rc:C.rc||{},open:C.open!==false,ex:C.ex||[],sens:C.sens||2,words:C.words.map(function(w){return{id:w.id,t:w.t,on:w.on||[]}}),ax:ax},old=RAX;
+  return Promise.all(ops).then(function(){return DB.doc('gc/main').set(main)}).then(function(){RAX=ax;Object.keys(old).forEach(function(x){if(!(x in ax))DB.collection('gca').doc(x).delete().catch(function(){})});return true})
+   .catch(function(e){alert('Kunde inte spara till Firebase: '+(e&&e.message||''));return false}).then(function(ok){PUSHING=false;if(AGAIN){AGAIN=false;push()}return ok})}
+function syncNow(){var s=$('sy');if(!DB||!SYNCED){if(s)s.textContent='Ingen kontakt med Firebase.';return}if(s)s.textContent='Skickar…';C.v=Date.now();idb('set',C).catch(function(){});push().then(function(ok){var s2=$('sy');if(s2)s2.textContent=ok?'✓ Klart':'Misslyckades'})}
+function pull(m){
+  var id=++PID,A0=assets(),ax=m.ax||{},keys=Object.keys(ax),A={},need=[];
+  keys.forEach(function(k){if(A0[k]&&fh(A0[k])===ax[k])A[k]=A0[k];else need.push(k)});
+  return Promise.all(need.map(function(k){return DB.collection('gca').doc(k).get().then(function(d){if(d.exists)A[k]=d.data().d}).catch(function(){})})).then(function(){
+    if(id!==PID||V==='adult')return;
+    var nc={v:m.v,sel:m.sel||[],rc:m.rc||{},open:m.open!==false,ex:m.ex||[],sens:m.sens||2,aud:{},words:(m.words||[]).map(function(w){return{id:w.id,t:w.t,on:w.on||[],img:A['i'+w.id]||'',aud:A['a'+w.id]||''}})};
+    keys.forEach(function(k){if(k[0]==='c'&&A[k])nc.aud[String.fromCodePoint(parseInt(k.slice(1),16))]=A[k]});
+    C=nc;idb('set',C).catch(function(){});if(V==='home')draw()})}
+function startSync(){
+  try{firebase.initializeApp(FB);DB=firebase.firestore();try{DB.settings({experimentalAutoDetectLongPolling:true})}catch(e){}}catch(e){console.error(e);FBERR=String(e&&e.message||e);return}upush();
+  DB.doc('gc/main').onSnapshot(function(s){if(s.metadata.hasPendingWrites||s.metadata.fromCache)return;SYNCED=true;if(!s.exists)return;var m=s.data();RAX=m.ax||{};if(m.v===C.v||V==='adult')return;pull(m)},function(e){FBERR=(e&&e.code)||String(e);console.error(e)})}
+
+/* ---- Frågor ---- */
+function dis(t,n,p){var f=p.filter(function(c){return c!==t&&rowOf(c)===rowOf(t)}),o=p.filter(function(c){return c!==t&&rowOf(c)!==rowOf(t)});return shuf(f).concat(shuf(o)).slice(0,n)}
+function isW(k){return k==='pic'||k==='pic2'||k==='build'||k==='miss'}
+function mk(k,a,p){
+  var q={k:k},w=C.words.filter(function(x){return x.id===a})[0];
+  function ds(t,n,ex){var r=dis(t,n,p).filter(function(x){return!ex||ex.indexOf(x)<0});if(!r.length){var o=RW[(rowOf(t)+1)%RW.length][0];if(o!==t)r=[o]}return r}
+  if(isW(k)){if(!w)return null;var g=gc(w.t);if(!g.length)return null;if(k!=='pic'&&!w.img&&!w.aud)return null;if(k==='pic2'&&!w.img)return null;q.w=w;
+    if(k==='pic2'){q.a=w.id;q.o=shuf([w.id].concat(shuf(C.words.filter(function(x){return x.id!==w.id&&x.img})).slice(0,3).map(function(x){return x.id})));return q}
+    if(k==='pic'){q.a=w.t;q.o=shuf([w.t].concat(shuf(C.words.filter(function(x){return x.id!==w.id&&x.t!==w.t})).slice(0,2).map(function(x){return x.t})))}
+    else if(k==='build'){q.a=g;q.o=shuf(g.concat(ds(g[0],1,g)))}
+    else{q.g=g;q.ix=Math.floor(Math.random()*g.length);q.a=g[q.ix];q.o=shuf([q.a].concat(ds(q.a,3)))}
+    return q}
+  if(k==='pair'){var cs=shuf(p).slice(0,Math.min(4,p.length));if(cs.length<2)return null;q.o=shuf(cs.concat(cs));return q}
+  if(k==='order'){var rk={};p.forEach(function(c){(rk[rowOf(c)]=rk[rowOf(c)]||[]).push(c)});var big=Object.keys(rk).filter(function(r){return r>-1&&rk[r].length>2});if(!big.length)return null;var r2=rnd(big),ar=rk[r2].sort(function(x,y){return RW[r2].indexOf(x)-RW[r2].indexOf(y)}),len=Math.min(4,ar.length),st=Math.floor(Math.random()*(ar.length-len+1));q.a=ar.slice(st,st+len);q.o=shuf(q.a);if(q.o.join('')===q.a.join(''))q.o=q.a.slice().reverse();return q}
+  if(!a)return null;q.a=a;
+  if(k==='see'||k==='hear')q.o=shuf([a].concat(ds(a,3)));
+  if(k==='odd'){var b=ds(a,1)[0];if(!b)return null;q.o=shuf([a,a,a,b]);q.ai=q.o.indexOf(b)}
+  return q}
+function mix(kinds,n){
+  var p=pl(),ws=C.words.filter(function(w){return gc(w.t).length}),wi=ws.filter(function(w){return w.img}),uw=ws.filter(function(w){return w.img||w.aud}),wm=uw.filter(function(w){return gc(w.t).length>1}),l=[];if(!p.length)return l;
+  var ok=kinds.filter(function(k){return(k==='pic'||k==='pic2')?wi.length>1:k==='build'?uw.length>0:k==='miss'?wm.length>0:k==='hear'?p.length>1&&p.some(function(c){return C.aud[c]}):(k==='see'||k==='odd'||k==='pair')?p.length>1:k==='order'?!!mk('order',0,p):true});
+  if(kinds.every(isW))n=Math.min(n,Math.max(4,uw.length*2));
+  var bag=[],lw='',lc='',t=0;
+  while(l.length<n&&t++<300){
+    if(!bag.length)bag=shuf(ok.length?ok:['wg']);var k=bag.pop(),q;
+    if(isW(k)){var src=(k==='pic'||k==='pic2')?wi:k==='miss'?wm:uw,c=src.filter(function(w){return w.id!==lw}),w=rnd(c.length?c:src);lw=w.id;q=mk(k,w.id,p)}
+    else{var s2=k==='hear'?p.filter(function(c){return C.aud[c]}):p,c2=s2.filter(function(x){return x!==lc}),a=rnd(c2.length?c2:s2);lc=a;q=mk(k,a,p)}
+    if(q)l.push(q)}
+  return l}
+var MN=[['🎲 Blandat',['see','hear','wg','odd','pair','order','pic','pic2','build','miss']],['👂 Lyssna',['hear']],['✍️ Skriva',['wg','wf']],['🔍 Hitta',['see','odd']],['🃏 Memory',['pair']],['🔢 Ordning',['order']],['🖼 Ord och bild',['pic','pic2','build','miss']]];
+function qs(kinds,n,name,id,list){
+  var l=list||mix(kinds,n||10);if(!l.length){alert('Välj fler tecken, och lägg in ljud eller ord, för den här övningen.');return}
+  Q={l:l,i:0,ok:0,t:0,wr:[],sl:[],fl:[],mt:[],fb:'',lock:0,ph:'',name:name||'',id:id||''};V='pr';draw()}
+function tst(id){var x=(C.ex||[]).filter(function(y){return y.id===id})[0];if(!x||!x.qs)return;qs(null,0,x.nm,id,x.qs.map(function(s){return mk(s.k,s.a,C.sel)}).filter(Boolean))}
+function nq(){if(!Q)return;Q.i++;Q.t=0;Q.wr=[];Q.sl=[];Q.fl=[];Q.mt=[];Q.fb='';Q.lock=0;Q.ph='';draw()}
+function good(){if(!Q)return;Q.lock=1;if(!Q.t)Q.ok++;Q.fb='ok';draw();setTimeout(nq,450)}
+function bad(v){Q.t++;if(v!=null)Q.wr.push(v);Q.fb='no';draw();if(Q.t>=3){Q.lock=1;setTimeout(nq,900)}}
+function qa(v){if(Q.lock)return;if(v===Q.l[Q.i].a)good();else bad(v)}
+function qi(i){if(Q.lock)return;if(i===Q.l[Q.i].ai)good();else bad(i)}
+function qb(i){var q=Q.l[Q.i];if(Q.lock||Q.sl.indexOf(i)>-1||Q.sl.length>=q.a.length)return;Q.sl.push(i);
+  if(Q.sl.length<q.a.length){draw();return}
+  if(Q.sl.every(function(ti,n){return q.o[ti]===q.a[n]}))good();else{Q.t++;Q.fb='no';Q.lock=1;draw();setTimeout(function(){if(!Q)return;Q.sl=[];Q.lock=0;Q.fb='';draw()},800)}}
+
+function qp(i){var q=Q.l[Q.i];if(Q.lock||Q.fl.indexOf(i)>-1||Q.mt.indexOf(i)>-1)return;Q.fl.push(i);if(Q.fl.length<2){draw();return}
+  var a=Q.fl[0],b=Q.fl[1];if(q.o[a]===q.o[b]){Q.mt.push(a,b);Q.fl=[];if(Q.mt.length===q.o.length){Q.lock=1;if(Q.t<=2)Q.ok++;Q.fb='ok';draw();setTimeout(nq,900)}else draw()}
+  else{Q.t++;Q.lock=1;draw();setTimeout(function(){if(!Q)return;Q.fl=[];Q.lock=0;draw()},750)}}
+/* ---- Skriva ---- */
+function maskOf(c,wide){var S=300,m=document.createElement('canvas');m.width=m.height=S;var x=m.getContext('2d');x.font='220px '+FNT;x.textAlign='center';if(wide){x.lineWidth=44;x.lineJoin='round';x.strokeText(c,150,215)}x.fillText(c,150,215);return x.getImageData(0,0,S,S).data}
+function setupTrace(c,done){
+  var cv=$('cv'),x=cv.getContext('2d'),k=col(c),S=300,d=maskOf(c),pts=[],cov=0,fin=false,dn=false,lx=0,ly=0;
+  for(var y=0;y<S;y+=5)for(var xx=0;xx<S;xx+=5)if(d[(y*S+xx)*4+3]>128)pts.push([xx,y,0]);
+  x.font='220px '+FNT;x.textAlign='center';x.fillStyle=k+'38';x.fillText(c,150,215);x.strokeStyle=k;x.fillStyle=k;x.lineWidth=18;x.lineCap='round';x.lineJoin='round';
+  function pos(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*S/r.width,(e.clientY-r.top)*S/r.height]}
+  function hit(a,b){pts.forEach(function(p){if(!p[2]&&Math.abs(p[0]-a)<13&&Math.abs(p[1]-b)<13){p[2]=1;cov++}});var f=cov/pts.length;$('pg').style.width=Math.min(100,f/.72*100)+'%';if(f>=.72&&!fin){fin=true;done()}}
+  cv.onpointerdown=function(e){dn=true;var p=pos(e);lx=p[0];ly=p[1];x.beginPath();x.arc(lx,ly,9,0,7);x.fill();hit(lx,ly);cv.setPointerCapture(e.pointerId)};
+  cv.onpointermove=function(e){if(!dn)return;var p=pos(e);x.beginPath();x.moveTo(lx,ly);x.lineTo(p[0],p[1]);x.stroke();var n=Math.ceil(Math.hypot(p[0]-lx,p[1]-ly)/6);for(var i=1;i<=n;i++)hit(lx+(p[0]-lx)*i/n,ly+(p[1]-ly)*i/n);lx=p[0];ly=p[1]};
+  cv.onpointerup=cv.onpointercancel=function(){dn=false}}
+function setupFree(){
+  var q=Q.l[Q.i],cv=$('cv'),x=cv.getContext('2d'),S=300,dn=false,lx=0,ly=0;FD=[];x.strokeStyle=col(q.a);x.fillStyle=col(q.a);x.lineWidth=12;x.lineCap='round';x.lineJoin='round';
+  function pos(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*S/r.width,(e.clientY-r.top)*S/r.height]}
+  cv.onpointerdown=function(e){dn=true;var p=pos(e);lx=p[0];ly=p[1];x.beginPath();x.arc(lx,ly,6,0,7);x.fill();FD.push([lx,ly]);cv.setPointerCapture(e.pointerId)};
+  cv.onpointermove=function(e){if(!dn)return;var p=pos(e);x.beginPath();x.moveTo(lx,ly);x.lineTo(p[0],p[1]);x.stroke();var n=Math.ceil(Math.hypot(p[0]-lx,p[1]-ly)/4);for(var i=1;i<=n;i++)FD.push([lx+(p[0]-lx)*i/n,ly+(p[1]-ly)*i/n]);lx=p[0];ly=p[1]};
+  cv.onpointerup=cv.onpointercancel=function(){dn=false}}
+function score(c,dr){
+  var S=300,d=maskOf(c),nd=maskOf(c,1),gp=[],st=Math.ceil(dr.length/300),D=dr.filter(function(_,i){return i%st===0});
+  for(var y=0;y<S;y+=5)for(var x=0;x<S;x+=5)if(d[(y*S+x)*4+3]>128)gp.push([x,y]);
+  function bx(a){var x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;a.forEach(function(p){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1])});return[x0,y0,x1,y1]}
+  var g=bx(gp),b=bx(D),sx=(g[2]-g[0])/Math.max(20,b[2]-b[0]),sy=(g[3]-g[1])/Math.max(20,b[3]-b[1]),t=D.map(function(p){return[g[0]+(p[0]-b[0])*sx,g[1]+(p[1]-b[1])*sy]}),cov=0,pr=0;
+  gp.forEach(function(p){for(var i=0;i<t.length;i++)if(Math.abs(t[i][0]-p[0])<17&&Math.abs(t[i][1]-p[1])<17){cov++;break}});
+  t.forEach(function(p){var x=Math.round(p[0]),y=Math.round(p[1]);if(x>=0&&y>=0&&x<S&&y<S&&nd[(y*S+x)*4+3]>60)pr++});
+  return Math.min(cov/gp.length,pr/t.length)}
+function wfCheck(){if(!Q||Q.lock||FD.length<8)return;var q=Q.l[Q.i];
+  if(score(q.a,FD)>=.5){Q.lock=1;if(!Q.t)Q.ok++;Q.fb='ok';draw();setTimeout(nq,600)}
+  else{Q.t++;Q.fb='no';Q.ph='';draw();if(Q.t>=2){Q.lock=1;setTimeout(nq,900)}}}
+
+/* ---- Barnets vyer ---- */
+function foot(){return'<div class="cen"><button class="sm" onclick="V=\'ov\';draw()">📖 Översikt</button> <button class="sm" onclick="lock()">🔒</button></div>'}
+function bk(){return'<button class="ic" onclick="Q=null;V=\'home\';draw()">←</button>'}
+function home(){
+  var sel=C.sel,ci=sel.findIndex(function(c){return!P.done[c]}),h='<div class="cen"><div style="font-size:54px">🦁</div><h1 class="g" style="margin:0">ንጽሓፍ ትግርኛ</h1></div>';
+  if(!sel.length)return h+'<p class="cen">🌱 Den vuxne har inte valt några tecken än.</p>'+foot();
+  h+='<div class="cen"><button class="big" onclick="go()">'+(ci<0?'🎉':'ጀምር ▶')+'</button><button class="big" style="background:#e0b020" onclick="V=\'menu\';draw()">🎯 ልምምድ</button><button class="big" style="background:#8a6fd0" onclick="V=\'tests\';draw()">🏅 ፈተና</button></div>';
+  var rs=[];sel.forEach(function(c){var r=rowOf(c);if(r>-1&&rs.indexOf(r)<0)rs.push(r)});rs.sort(function(a,b){return a-b});
+  function tl(c){var i=sel.indexOf(c),d=P.done[c],lk=!isOpen()&&!d&&i>ci;return'<button class="tile g'+(d?' dn':'')+'" style="--k:'+col(c)+(lk?';opacity:.4':'')+'" data-c="'+esc(c)+'" onclick="pick(this.dataset.c)">'+(lk?'🔒':esc(c))+'</button>'}
+  h+=rs.map(function(r){return'<div class="g" style="font-size:28px;margin:14px 0 4px;color:'+col(RW[r][0])+'">'+esc(RW[r][0])+'</div><div class="seven">'+RW[r].map(function(c){return sel.indexOf(c)>-1?tl(c):'<span class="tile ph"></span>'}).join('')+'</div>'}).join('');
+  return h+'</div>'+foot()}
+function go(){var c=C.sel.filter(function(x){return!P.done[x]})[0];if(c)start(c)}
+function pick(c){var i=C.sel.indexOf(c),ci=C.sel.findIndex(function(x){return!P.done[x]});if(isOpen()||P.done[c]||i<=ci)start(c)}
+function start(c){CUR=c;ST=1;V='learn';draw()}
+function learn(){
+  var c=CUR,k=col(c),h='<div style="--k:'+k+'"><button class="ic" onclick="V=\'home\';draw()">←</button>';
+  if(ST===1)h+='<div class="cen"><button class="gbtn g" onclick="play(C.aud[CUR])">'+esc(c)+'</button><p class="sub">'+(C.aud[c]?'🔊 👆':'🔇')+'</p>'+C.words.filter(function(w){return gc(w.t).indexOf(c)>-1}).map(function(w){return'<div class="pan wc">'+(w.img?'<img src="'+w.img+'">':'')+'<div class="g" style="font-size:44px">'+esc(w.t)+'</div>'+(w.aud?'<button class="ic" onclick="play(C.words.find(function(x){return x.id===\''+w.id+'\'}).aud)">🔊</button>':'')+'</div>'}).join('')+'</div>';
+  if(ST===2)h+='<canvas id="cv" width="300" height="300"></canvas><div class="pb"><i id="pg"></i></div>';
+  if(ST===3)h+='<div class="cen"><div style="font-size:64px">⭐⭐⭐</div><h1 class="g" style="color:'+k+'">ጽቡቕ!</h1></div>';
+  return h+'<div class="cen"><button class="big" id="nb" onclick="nxt()"'+(ST===2?' disabled':'')+'>'+(ST===3?'ቀጽል ▶':'▶')+'</button></div></div>'}
+function nxt(){if(ST<3){ST++;if(ST===3){P.done[CUR]=1;ulog('Lärde sig '+CUR)}draw();return}var n=C.sel[C.sel.indexOf(CUR)+1];if(n&&!P.done[n])start(n);else{V='home';draw()}}
+function menu(){return bk()+'<div class="opts">'+MN.map(function(m,i){return'<button class="tile" style="font-size:22px;--k:#3b3350" onclick="qs(MN['+i+'][1],10)">'+m[0]+'</button>'}).join('')+'</div>'}
+function tests(){return bk()+'<div class="opts"><button class="tile" style="font-size:22px;--k:#8a6fd0" onclick="qs(MN[0][1],10,\'Blandat\')">🏅 Blandat</button>'+(C.ex||[]).filter(function(x){return x.qs}).map(function(x){return'<button class="tile" style="font-size:22px;--k:#8a6fd0" data-i="'+x.id+'" onclick="tst(this.dataset.i)">⭐ '+esc(x.nm)+'<br><small>'+(P.prov[x.id]!=null?P.prov[x.id]+'/'+x.qs.length:'')+'</small></button>'}).join('')+'</div>'}
+function pr(){
+  if(Q.i>=Q.l.length){var n=Q.l.length,s=Q.ok>=n*.9?3:Q.ok>=n*.6?2:1;if(!Q.saved){Q.saved=1;if(Q.id&&Q.ok>(P.prov[Q.id]||0))P.prov[Q.id]=Q.ok;P.st=P.st||{n:0,ok:0,tot:0};P.st.n++;P.st.ok+=Q.ok;P.st.tot+=n;ulog((Q.name||'Övning')+': '+Q.ok+'/'+n)}
+    return'<div class="cen" style="margin-top:30px"><div style="font-size:60px">'+'⭐'.repeat(s)+'</div><h1>'+Q.ok+' / '+n+'</h1><div style="font-size:90px">🏆</div><button class="big" onclick="Q=null;V=\'home\';draw()">🏠</button></div>'}
+  var q=Q.l[Q.i],h=bk()+' <span class="sub">'+(Q.i+1)+'/'+Q.l.length+(Q.name?' · '+esc(Q.name):'')+'</span><div class="fb '+Q.fb+'">'+(Q.fb==='ok'?'✅ ጽቡቕ!':Q.fb==='no'?'❌ ደጊምካ ፈትን':'')+'</div>';
+  function opts(w){return'<div class="opts">'+q.o.map(function(x){return'<button class="tile g'+(Q.wr.indexOf(x)>-1?' bad':'')+'" style="--k:'+(w?'#3b3350;font-size:30px':col(x))+'" data-v="'+esc(x)+'" onclick="qa(this.dataset.v)">'+esc(x)+'</button>'}).join('')+'</div>'}
+  var img=q.w&&q.w.img?'<div class="cen wc"><img src="'+q.w.img+'"></div>':'',bimg=img+(q.w&&q.w.aud?'<div class="cen"><button class="ic" onclick="play(Q.l[Q.i].w.aud)">🔊</button></div>':'');
+  if(q.k==='see')return h+'<div class="cen"><span class="g bl" style="color:'+col(q.a)+'">'+esc(q.a)+'</span></div>'+opts();
+  if(q.k==='hear')return h+'<div class="cen"><button class="gbtn" style="--k:#e0b020" onclick="play(C.aud[Q.l[Q.i].a])">🔊</button></div>'+opts();
+  if(q.k==='odd')return h+'<div class="cen sub">🔍</div><div class="opts">'+q.o.map(function(x,i){return'<button class="tile g'+(Q.wr.indexOf(i)>-1?' bad':'')+'" style="--k:'+col(x)+'" data-i="'+i+'" onclick="qi(+this.dataset.i)">'+esc(x)+'</button>'}).join('')+'</div>';
+  if(q.k==='pic2')return h+'<div class="cen g" style="font-size:54px">'+esc(q.w.t)+'</div>'+(q.w.aud?'<div class="cen"><button class="ic" onclick="play(Q.l[Q.i].w.aud)">🔊</button></div>':'')+'<div class="opts">'+q.o.map(function(id){var w=C.words.filter(function(x){return x.id===id})[0];return'<button class="tile'+(Q.wr.indexOf(id)>-1?' bad':'')+'" style="--k:#3b3350;padding:0;overflow:hidden;aspect-ratio:1" data-v="'+id+'" onclick="qa(this.dataset.v)"><img src="'+w.img+'" style="width:100%;height:100%;object-fit:cover"></button>'}).join('')+'</div>';
+  if(q.k==='pic')return h+img+opts(1);
+  if(q.k==='miss')return h+bimg+'<div class="cen g" style="font-size:54px;letter-spacing:4px">'+q.g.map(function(x,i){return i===q.ix?'◻':esc(x)}).join('')+'</div>'+opts();
+  if(q.k==='build'||q.k==='order')return h+bimg+'<div class="cen slots">'+q.a.map(function(x,n){return'<span>'+(Q.sl[n]!=null?esc(q.o[Q.sl[n]]):'')+'</span>'}).join('')+'</div><div class="opts" style="grid-template-columns:repeat(4,1fr)">'+q.o.map(function(x,i){return Q.sl.indexOf(i)>-1?'':'<button class="tile g" style="--k:'+col(x)+';height:64px;font-size:30px" data-i="'+i+'" onclick="qb(+this.dataset.i)">'+esc(x)+'</button>'}).join('')+'</div><div class="cen"><button class="ic" onclick="Q.sl=[];draw()">✕</button></div>';
+  if(q.k==='pair')return h+'<div class="cen sub">🃏</div><div class="opts" style="grid-template-columns:repeat(3,1fr)">'+q.o.map(function(x,i){var mt=Q.mt.indexOf(i)>-1,up=mt||Q.fl.indexOf(i)>-1;return'<button class="tile g'+(mt?' dn':'')+'" style="--k:'+(up?col(x):'#8a8199')+';aspect-ratio:1;height:auto" data-i="'+i+'" onclick="qp(+this.dataset.i)">'+(up?esc(x):'❓')+'</button>'}).join('')+'</div>';
+  if(q.k==='wg')return h+'<canvas id="cv" width="300" height="300"></canvas><div class="pb" style="--k:'+col(q.a)+'"><i id="pg"></i></div>';
+  if(Q.ph!=='draw')return h+'<div class="cen sub">👀</div><div class="cen"><span class="g bl" style="color:'+col(q.a)+'">'+esc(q.a)+'</span></div>';
+  return h+'<canvas id="cv" width="300" height="300"></canvas><div class="cen"><button class="ic" onclick="draw()">✕</button> <button class="ic" style="background:#4fae5c;color:#fff" onclick="wfCheck()">✔</button></div>'}
+function draw(){
+  if(!C)return;var vw={home:home,learn:learn,menu:menu,tests:tests,reg:uReg,ov:ov};if(!P.user&&!P.isAdm&&V!=='adult')V='reg';
+  $('app').innerHTML=V==='pr'&&Q?pr():vw[V]?vw[V]():adult();
+  if(V==='learn'&&ST===2)setupTrace(CUR,function(){var n=$('nb');if(n)n.disabled=false});
+  if(V==='pr'&&Q&&Q.i<Q.l.length){var q=Q.l[Q.i];
+    if(q.k==='wg')setupTrace(q.a,function(){if(!Q||Q.lock)return;Q.lock=1;Q.ok++;var f=document.querySelector('.fb');if(f){f.className='fb ok';f.textContent='✅ ጽቡቕ!'}setTimeout(nq,700)});
+    if(q.k==='wf'){if(!Q.ph){Q.ph='show';var i0=Q.i;setTimeout(function(){if(Q&&Q.i===i0&&Q.ph==='show'){Q.ph='draw';draw()}},2500)}else if(Q.ph==='draw')setupFree()}}}
+
+/* ---- Vuxenläge ---- */
+function lock(){
+  var d=document.createElement('div');d.className='ov';d.innerHTML='<div class="md"><div style="font-size:44px">🔒</div><input id="pn" type="password" placeholder="Kod"><button class="big" id="po">OK</button><button class="big" id="pc" style="background:#bbb">✕</button><div class="no" id="pe"></div></div>';document.body.appendChild(d);
+  function enter(){d.remove();P.isAdm=1;sp();V='adult';AT='c';draw()}
+  function go2(){if($('pn').value!==PIN){$('pe').textContent='Fel kod';return}
+    if(DB&&!SYNCED){$('pe').textContent='Ansluter till Firebase…';var n=0,iv=setInterval(function(){if(!d.parentNode){clearInterval(iv);return}if(SYNCED){clearInterval(iv);enter()}else if(++n>20){clearInterval(iv);$('pe').textContent='Ingen kontakt med Firebase'+(FBERR?' ('+FBERR+')':'')+'. Kolla internet och reglerna i Firebase.'}},500);return}
+    enter()}
+  $('po').onclick=go2;$('pn').onkeydown=function(e){if(e.key==='Enter')go2()};$('pc').onclick=function(){d.remove()};$('pn').focus()}
+function adult(){
+  var T=[['c','ፊደላት'],['w','ቃላት'],['p','🏅 Prov'],['u','👥'],['s','💾']];
+  return'<div class="cen" style="display:flex;gap:8px;align-items:center"><button class="ic" onclick="V=\'home\';draw()">🔒</button><div class="tabs" style="flex:1">'+T.map(function(t){return'<button class="'+(AT===t[0]?'on':'')+'" data-t="'+t[0]+'" onclick="AT=this.dataset.t;draw()">'+t[1]+'</button>'}).join('')+'</div></div>'+({c:aC,w:aW,p:aP,u:aU,s:aS})[AT]()}
+function aud(k,u){return'<span style="margin-left:auto"><button class="sm" data-k="'+esc(k)+'" onclick="rec(this.dataset.k)">'+(MR&&MK===k?'⏹':'🎤')+'</button> <label class="sm">📁<input type="file" accept="audio/*" hidden data-k="'+esc(k)+'" onchange="upA(this)"></label>'+(u?' <button class="sm" data-k="'+esc(k)+'" onclick="play(getA(this.dataset.k))">▶</button> <button class="sm" data-k="'+esc(k)+'" onclick="setAud(this.dataset.k,\'\')">🗑</button>':'')+'</span>'}
+function getA(k){return k[0]==='c'?C.aud[k.slice(2)]:ED.aud}
+function setAud(k,u){if(k[0]==='c'){if(u)C.aud[k.slice(2)]=u;else delete C.aud[k.slice(2)];sv()}else ED.aud=u;draw()}
+function upA(el){var f=el.files[0];if(!f)return;var r=new FileReader(),k=el.dataset.k;r.onload=function(){setAud(k,r.result)};r.readAsDataURL(f)}
+function rec(k){
+  if(MR){MR.stop();return}
+  if(!navigator.mediaDevices||!window.MediaRecorder){alert('Inspelning stöds inte här. Använd 📁.');return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){var ch=[],m=new MediaRecorder(st);MR=m;MK=k;m.ondataavailable=function(e){ch.push(e.data)};
+    m.onstop=function(){st.getTracks().forEach(function(t){t.stop()});MR=null;var r=new FileReader();r.onload=function(){setAud(k,r.result)};r.readAsDataURL(new Blob(ch,{type:m.mimeType}))};m.start();draw()}).catch(function(){alert('Mikrofonen är blockerad.')})}
+function tog(c){var i=C.sel.indexOf(c);if(i>-1)C.sel.splice(i,1);else C.sel.push(c);sv();draw()}
+function row(i){var r=RW[i],all=r.every(function(c){return C.sel.indexOf(c)>-1});r.forEach(function(c){var j=C.sel.indexOf(c);if(all){if(j>-1)C.sel.splice(j,1)}else if(j<0)C.sel.push(c)});sv();draw()}
+function mv(i,d){var j=i+d;if(j<0||j>=C.sel.length)return;var t=C.sel[i];C.sel[i]=C.sel[j];C.sel[j]=t;sv();draw()}
+function aC(){
+  var h='<div class="pan"><h3>Valda tecken ('+C.sel.length+')</h3><div class="sub">Ordningen här är ordningen barnet lär sig dem.</div>';
+  C.sel.forEach(function(c,i){h+='<div class="li"><span class="g" style="font-size:32px;color:'+col(c)+'">'+esc(c)+'</span><button class="sm" data-i="'+i+'" onclick="mv(+this.dataset.i,-1)">▲</button><button class="sm" data-i="'+i+'" onclick="mv(+this.dataset.i,1)">▼</button><button class="sm" data-c="'+esc(c)+'" onclick="tog(this.dataset.c)">✕</button>'+aud('c:'+c,C.aud[c])+'</div>'});
+  h+='</div><div class="pan"><h3>Välj tecken</h3>';
+  RW.forEach(function(r,i){h+='<div class="rw"><button class="sm" data-i="'+i+'" onclick="row(+this.dataset.i)">Hela raden</button>'+r.map(function(c){return'<button class="sm g'+(C.sel.indexOf(c)>-1?' on':'')+'" style="--k:'+col(c)+';font-size:22px" data-c="'+esc(c)+'" onclick="tog(this.dataset.c)">'+esc(c)+'</button>'}).join('')+'</div>'});
+  return h+'</div>'}
+function upI(el){var f=el.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,520/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);ED.img=c.toDataURL('image/jpeg',.82);draw()};im.src=r.result};r.readAsDataURL(f)}
+function saveW(){var t=ED.t.trim();if(!gc(t).length){alert('Skriv ett ord med Ge\u2019ez-tecken.');return}
+  var w={id:ED.id||Date.now().toString(36),t:t,img:ED.img,aud:ED.aud,on:[]},i=C.words.map(function(x){return x.id}).indexOf(w.id);if(i>-1)C.words[i]=w;else C.words.push(w);ED={t:'',img:'',aud:''};sv();draw()}
+function editW(i){var w=C.words[i];ED={id:w.id,t:w.t,img:w.img,aud:w.aud};draw();scrollTo(0,0)}
+function delW(i){if(confirm('Ta bort ordet?')){C.words.splice(i,1);sv();draw()}}
+function aW(){
+  var h='<div class="pan"><h3>'+(ED.id?'Ändra ord':'Nytt ord')+'</h3><input type="text" class="g" value="'+esc(ED.t)+'" placeholder="ቃል ጽሓፍ" oninput="ED.t=this.value" style="font-size:24px"><div class="li">'+(ED.img?'<img class="th" src="'+ED.img+'"><button class="sm" onclick="ED.img=\'\';draw()">🗑</button>':'<span class="sub">Ingen bild</span>')+'<label class="sm">🖼 Ladda upp bild<input type="file" accept="image/*" hidden onchange="upI(this)"></label></div><div class="li"><span class="sub">Ljud (valfritt)</span>'+aud('w:x',ED.aud)+'</div><button class="big" onclick="saveW()">Spara ordet</button>'+(ED.id?'<button class="big" style="background:#bbb" onclick="ED={t:\'\',img:\'\',aud:\'\'};draw()">Avbryt</button>':'')+'</div><div class="pan"><h3>Ordbank ('+C.words.length+')</h3>';
+  C.words.forEach(function(w,i){h+='<div class="li">'+(w.img?'<img class="th" src="'+w.img+'">':'')+'<span class="g" style="font-size:28px">'+esc(w.t)+'</span><span style="margin-left:auto"><button class="sm" data-i="'+i+'" onclick="editW(+this.dataset.i)">✏️</button> <button class="sm" data-i="'+i+'" onclick="delW(+this.dataset.i)">🗑</button></span></div>'});
+  return h+'</div>'}
+
+/* ---- Eget prov: du bestämmer varje fråga ---- */
+var TY=[['see','👀 Hitta tecknet'],['hear','👂 Lyssna (kräver ljud)'],['wg','✍️ Skriva med hjälp'],['wf','✍️ Skriva utan hjälp'],['odd','🔍 Udda ett ut'],['pic','🖼 Bild → ord'],['pic2','🖼 Ord → bild'],['build','🧩 Bygg ordet'],['miss','◻ Saknad bokstav']];
+function eqAdd(){EXQ.qs.push({k:'see',a:C.sel[0]||''});draw()}
+function eqK(i,k){var s=EXQ.qs[i];s.k=k;s.a=isW(k)?(C.words[0]?C.words[0].id:''):(C.sel[0]||'');draw()}
+function eqDel(i){EXQ.qs.splice(i,1);draw()}
+function eqMv(i,d){var j=i+d,q=EXQ.qs;if(j<0||j>=q.length)return;var t=q[i];q[i]=q[j];q[j]=t;draw()}
+function eqSave(){var qs=EXQ.qs.filter(function(s){return s.a});if(!EXQ.nm.trim()||!qs.length){alert('Skriv ett namn och lägg till minst en fråga');return}
+  var x={id:EXQ.id||'x'+Date.now().toString(36),nm:EXQ.nm.trim(),g:[],k:[],c:[],q:qs.length,d:3,qs:qs.map(function(s){return{k:s.k,a:s.a}})};
+  C.ex=C.ex||[];var i=C.ex.map(function(y){return y.id}).indexOf(x.id);if(i>-1)C.ex[i]=x;else C.ex.push(x);EXQ={id:'',nm:'',qs:[]};sv();draw()}
+function eqEdit(i){var x=C.ex[i];EXQ={id:x.id,nm:x.nm,qs:(x.qs||[]).map(function(s){return{k:s.k,a:s.a}})};draw();scrollTo(0,0)}
+function eqDelT(i){if(confirm('Ta bort provet?')){C.ex.splice(i,1);sv();draw()}}
+function aP(){
+  var h='<div class="pan"><h3>'+(EXQ.id?'Ändra prov':'Nytt prov')+'</h3><div class="sub">Du bestämmer varje fråga: välj typ och vilket tecken eller ord den gäller.</div><input type="text" placeholder="Provets namn" value="'+esc(EXQ.nm)+'" oninput="EXQ.nm=this.value" style="margin-top:8px">';
+  EXQ.qs.forEach(function(s,i){
+    var o=isW(s.k)?C.words.map(function(x){return[x.id,x.t+((s.k==='pic'||s.k==='pic2')&&!x.img?' (bild saknas)':'')]}):C.sel.map(function(c){return[c,c+(s.k==='hear'&&!C.aud[c]?' 🔇':'')]});
+    h+='<div class="li"><b>'+(i+1)+'.</b><select data-i="'+i+'" onchange="eqK(+this.dataset.i,this.value)">'+TY.map(function(t){return'<option value="'+t[0]+'"'+(t[0]===s.k?' selected':'')+'>'+t[1]+'</option>'}).join('')+'</select><select class="g" data-i="'+i+'" onchange="EXQ.qs[+this.dataset.i].a=this.value">'+o.map(function(p){return'<option value="'+esc(p[0])+'"'+(p[0]===s.a?' selected':'')+'>'+esc(p[1])+'</option>'}).join('')+'</select><button class="sm" data-i="'+i+'" onclick="eqMv(+this.dataset.i,-1)">▲</button><button class="sm" data-i="'+i+'" onclick="eqMv(+this.dataset.i,1)">▼</button><button class="sm" data-i="'+i+'" onclick="eqDel(+this.dataset.i)">✕</button></div>'});
+  h+='<div><button class="big" style="background:#4a8fe0" onclick="eqAdd()">+ Fråga</button><button class="big" onclick="eqSave()">Spara provet</button>'+(EXQ.id?'<button class="big" style="background:#bbb" onclick="EXQ={id:\'\',nm:\'\',qs:[]};draw()">Avbryt</button>':'')+'</div></div><div class="pan"><h3>Mina prov ('+(C.ex||[]).length+')</h3>';
+  (C.ex||[]).forEach(function(x,i){h+='<div class="li"><b>'+esc(x.nm)+'</b><span class="sub">'+(x.qs?x.qs.length+' frågor':'gammal övning')+'</span><span style="margin-left:auto">'+(x.qs?'<button class="sm" data-i="'+i+'" onclick="eqEdit(+this.dataset.i)">✏️</button> ':'')+'<button class="sm" data-i="'+i+'" onclick="eqDelT(+this.dataset.i)">🗑</button></span></div>'});
+  return h+'</div>'}
+function aS(){
+  return'<div class="pan"><h3>Lås</h3><label class="li" style="border:0"><input type="checkbox" '+(isOpen()?'checked':'')+' onchange="C.open=this.checked;sv();draw()"><span>Öppna alla valda tecken för barnet (inga lås)</span></label></div><div class="pan"><h3>☁️ Delas automatiskt</h3><div class="sub">Det du ändrar sparas i Firebase och syns hos alla som har länken.</div><button class="big" onclick="syncNow()">☁️ Synka upp allt nu</button><div class="sub" id="sy"></div></div><div class="pan"><h3>Barnets framsteg</h3><button class="sm" onclick="if(confirm(\'Nollställ framsteg?\')){P={done:{},prov:{},user:P.user,isAdm:P.isAdm};sp();draw()}">Nollställ framsteg</button></div>'}
+
+/* ---- Föräldrar, användarlista, översikt ---- */
+function ov(){return bk()+'<div class="pan"><h3>ፊደላት 🔊</h3><div class="rw">'+C.sel.map(function(c){return'<button class="tile g" style="--k:'+col(c)+';width:64px;height:64px;font-size:30px" data-c="'+esc(c)+'" onclick="play(C.aud[this.dataset.c])">'+esc(c)+'</button>'}).join('')+'</div></div><div class="pan"><h3>ቃላት</h3>'+C.words.map(function(w){return'<div class="li">'+(w.img?'<img class="th" src="'+w.img+'">':'')+'<span class="g" style="font-size:28px">'+esc(w.t)+'</span>'+(w.aud?'<button class="sm" onclick="play(C.words.find(function(x){return x.id===\''+w.id+'\'}).aud)">🔊</button>':'')+'</div>'}).join('')+'</div>'}
+function uReg(){return'<div class="cen"><div style="font-size:54px">🦁</div><h1 class="g" style="margin:0">ንጽሓፍ ትግርኛ</h1></div><div class="pan"><h3>👋 Förälder / ወላዲ</h3><div class="sub">Skriv ditt namn och telefonnummer. Du gör det bara en gång.</div><input type="text" id="rn" placeholder="Namn / ስም" style="margin-top:10px"><input type="tel" id="rp" placeholder="Telefon / ቁጽሪ ተሌፎን" style="margin-top:8px"><div class="no" id="re"></div><button class="big" onclick="doReg()">▶</button></div><div class="cen"><button class="sm" onclick="lock()">🔒</button></div>'}
+function doReg(){var n=$('rn').value.trim(),p=$('rp').value.replace(/\D/g,'');if(n.length<2||p.length<7){$('re').textContent='Skriv namn och telefonnummer';return}P.user={id:Math.random().toString(36).slice(2,10),name:n,phone:$('rp').value.trim(),t:Date.now()};ulog('Registrerade sig');V='home';draw()}
+function ulog(e){P.log=P.log||[];P.log.unshift({t:Date.now(),e:e});if(P.log.length>40)P.log.length=40;sp()}
+var UT=0,UL={},UNS=null,UX='';
+function upush(){if(!DB||!P.user)return;clearTimeout(UT);UT=setTimeout(function(){DB.collection('gu').doc(P.user.id).set({name:P.user.name,phone:P.user.phone,created:P.user.t||0,last:Date.now(),done:P.done||{},prov:P.prov||{},st:P.st||{n:0,ok:0,tot:0},log:P.log||[]}).catch(function(e){console.error(e)})},1500)}
+function ago(t){var m=Math.round((Date.now()-t)/60000);return m<1?'nu':m<60?m+' min sedan':m<1440?Math.round(m/60)+' tim sedan':Math.round(m/1440)+' dagar sedan'}
+function aU(){
+  if(!DB)return'<div class="pan">Ingen kontakt med Firebase.</div>';
+  if(!UNS)UNS=DB.collection('gu').onSnapshot(function(q){UL={};q.forEach(function(d){UL[d.id]=d.data()});if(V==='adult'&&AT==='u')draw()},function(e){console.error(e)});
+  var ids=Object.keys(UL).sort(function(a,b){return(UL[b].last||0)-(UL[a].last||0)}),h='<div class="pan"><h3>👥 Användare ('+ids.length+')</h3>';
+  ids.forEach(function(id){var u=UL[id],st=u.st||{n:0,ok:0,tot:0};
+    h+='<div class="li" style="display:block"><b>'+esc(u.name)+'</b> · <a href="tel:'+esc(u.phone)+'">'+esc(u.phone)+'</a><div class="sub">🕒 '+ago(u.last||0)+' · 🔤 '+Object.keys(u.done||{}).length+'/'+C.sel.length+' tecken · 📝 '+st.n+' övningar'+(st.tot?' ('+Math.round(100*st.ok/st.tot)+'% rätt)':'')+'</div><button class="sm" data-i="'+id+'" onclick="UX=UX===this.dataset.i?\'\':this.dataset.i;draw()">'+(UX===id?'Dölj':'Visa vad hen gjort')+'</button> <button class="sm" data-i="'+id+'" onclick="if(confirm(\'Ta bort?\'))DB.collection(\'gu\').doc(this.dataset.i).delete()">✕</button>'+(UX===id?'<div class="sub" style="margin-top:6px">'+(u.log||[]).map(function(x){return'• '+ago(x.t)+': '+esc(x.e)}).join('<br>')+'</div>':'')+'</div>'});
+  return h+(ids.length?'':'<div class="sub">Ingen har öppnat appen än.</div>')+'</div>'}
+
+/* ---- Start ---- */
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(x){x.unregister()})}).catch(function(){});if(window.caches)caches.keys().then(function(k){k.forEach(function(n){caches.delete(n)})}).catch(function(){})}
+idb('get').catch(function(){}).then(function(c){C=c||{v:0,sel:[],words:[],aud:{},ex:[]};C.rc=C.rc||{};C.ex=C.ex||[];C.words=C.words||[];C.aud=C.aud||{};C.sel=C.sel||[];draw();startSync()});
+</script></body></html>
